@@ -1,0 +1,127 @@
+{
+  "metadata": {
+    "version": 3,
+    "sources": [
+      {
+        "name": "default",
+        "kind": "postgres",
+        "tables": [],
+        "configuration": {
+          "connection_info": {
+            "use_prepared_statements": false,
+            "database_url": {
+              "from_env": "PG_DATABASE_URL"
+            },
+            "isolation_level": "read-committed"
+          }
+        }
+      }
+    ],
+    "actions": [
+      {
+        "name": "resTransformOne",
+        "definition": {
+          "handler": "http://host.docker.internal:3005",
+          "output_type": "DatesArray",
+          "request_transform": {
+            "request_headers": {
+              "remove_headers": [
+                "content-type"
+              ],
+              "add_headers": {}
+            },
+            "url": "{{$base_url}}/example-one",
+            "method": "GET",
+            "version": 2,
+            "query_params": {},
+            "template_engine": "Kriti"
+          },
+          "response_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\"date\": [\"{{$body.date}}\"]}"
+            },
+            "version": 2,
+            "template_engine": "Kriti"
+          },
+          "type": "query"
+        }
+      },
+      {
+        "name": "resTransformTwo",
+        "definition": {
+          "handler": "http://host.docker.internal:3005",
+          "output_type": "Calendar",
+          "request_transform": {
+            "request_headers": {
+              "remove_headers": [
+                "content-type"
+              ],
+              "add_headers": {}
+            },
+            "url": "{{$base_url}}/example-two",
+            "method": "GET",
+            "version": 2,
+            "query_params": {},
+            "template_engine": "Kriti"
+          },
+          "response_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\"calendar\": [ {{range y, x := $body}} {\"date\":  {{ head(head(toPairs(x))) }}, \"onSale\":  {{ head(tail(head(inverse(toPairs(x))))) }} } {{ end }} ] }"
+            },
+            "version": 2,
+            "template_engine": "Kriti"
+          },
+          "type": "query"
+        }
+      }
+    ],
+    "custom_types": {
+      "input_objects": [
+        {
+          "name": "SampleInput",
+          "fields": [
+            {
+              "name": "eventId",
+              "type": "String!"
+            }
+          ]
+        }
+      ],
+      "objects": [
+        {
+          "name": "Event",
+          "fields": [
+            {
+              "name": "date",
+              "type": "String"
+            },
+            {
+              "name": "onSale",
+              "type": "Boolean"
+            }
+          ]
+        },
+        {
+          "name": "Calendar",
+          "fields": [
+            {
+              "name": "calendar",
+              "type": "[Event]"
+            }
+          ]
+        },
+        {
+          "name": "DatesArray",
+          "fields": [
+            {
+              "name": "date",
+              "type": "[String]"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
