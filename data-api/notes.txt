@@ -1,0 +1,1 @@
+Transform into -> {__typename: "Calendar", dateTime: "2022-07-12", soldOut: false, closed: false}
