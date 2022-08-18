@@ -38,6 +38,10 @@ For information on Kriti please see the following link:
 
 ### Adding a response transform
 
+Please ensure the desired types are defined for your action in the UI of your
+project before proceeeding to the first step if you would rather not create them
+by editing metadata.
+
 **Step 1**: In your project, navigate to the setttings page
 <http://{YOUR_PROJECTS_URL}/console/settings/metadata-actions> and export your
 projects metadata.
@@ -61,6 +65,19 @@ response_transform.body.template object created in the last step.
 
 `"response_transform": { "body": { "action": "transform", "template": "{ADDED_KRITI_TRANSFORM}", "version": 2, "template_engine": "Kriti" }`
 
-The action defined in metadata should now look similar to below:
+The action defined in metadata should now look similar to below. Please ensure
+the correct output type for the action has been input in
+"defintion"."output_type:" as well:
 
-![hasura project metada with added transform](./static-images/add_response_step_4.png?raw=true)
+![hasura project metadata with added transform](./static-images/add_response_step_4.png?raw=true)
+
+**Step 5** if you did not create your type defintions when creating the action,
+you can add types in the metadata.sources.custom_types object. Note there are
+two different types specified in metadata: Input & Standard. Ensure that your
+respective types are added to the correct specification in either
+`{custom_types.input_objects.[...]}` or `{custom_types.objects.[...]}` of the
+metadata file.
+
+![hasura project metadata type definition](./static-images/add_response_step_5.png?raw=true)
+
+## Response Transform Examples
