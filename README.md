@@ -38,25 +38,25 @@ For information on Kriti please see the following link:
 
 ### Adding a response transform
 
-Step 1: In your project, navigate to the setttings page
+**Step 1**: In your project, navigate to the setttings page
 <http://{YOUR_PROJECTS_URL}/console/settings/metadata-actions> and export your
 projects metadata.
 
 ![hasura project settings page](./static-images/add_response_step_1.png?raw=true)
 
-Step 2: Open the metadata.json file exported and find the metadata definition of
-the action you want to add a response transfrom to. It should have a smiliar
-form to what you see below.
+**Step 2**: Open the metadata.json file exported and find the metadata
+definition of the action you want to add a response transfrom to. It should have
+a smiliar form to what you see below.
 
 ![hasura project json metadata action](./static-images/add_response_step_2.png?raw=true)
 
-Step 3: Augment the action metadata by adding a response transform object in the
-`"definition":{...}` of the action. Please ensure the added response transform
-object has the same form as the following:
+**Step 3**: Augment the action metadata by adding a response transform object in
+the `"definition":{...}` of the action. Please ensure the added response
+transform object has the same form as the following:
 
 `"response_transform": { "body": { "action": "transform", "template": "{ }", "version": 2, "template_engine": "Kriti" }`
 
-Step 4: Create your json transform using Kriti and insert it into the
+**Step 4**: Create your json transform using Kriti and insert it into the
 response_transform.body.template object created in the last step.
 
 `"response_transform": { "body": { "action": "transform", "template": "{ADDED_KRITI_TRANSFORM}", "version": 2, "template_engine": "Kriti" }`
