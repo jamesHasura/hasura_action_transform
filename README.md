@@ -138,6 +138,11 @@ Action Output:
 Request Transforms are enabled through the UI and therefore editing metadata is
 not required.
 
+There are two examples in this project of request transforms:
+
+- reqTransformExOne
+- reqTransformExTwo
+
 Please see the following documentation which describe the different ways you can
 transform requests in Hasura:
 
