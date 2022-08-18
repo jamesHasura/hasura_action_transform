@@ -1,4 +1,4 @@
-# Hasura Rest Connector Transforms
+# Hasura Action Transforms
 
 ## Overview
 
