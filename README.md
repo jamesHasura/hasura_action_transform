@@ -138,7 +138,7 @@ Action Output:
 Request Transforms are enabled through the UI and therefore editing metadata is
 not required.
 
-There are two examples in this project of request transforms:
+There are two examples in this project of request body transforms:
 
 - reqTransformExOne
 - reqTransformExTwo
