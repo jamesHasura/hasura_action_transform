@@ -130,7 +130,7 @@ You can review the initial api response at:
 
 `"template": "{\"calendar\": [ {{range y, x := $body}} {\"date\": {{ head(head(toPairs(x))) }}, \"onSale\": {{ head(tail(head(inverse(toPairs(x))))) }} } {{ end }} ] }"`
 
-**Action Output**:
+**_Action Output_**:
 
 `"resTransformExThree": { "calendar": [ [ { "date": "5/17/2017", "onSale": false }, { "date": "6/29/2015", "onSale": false } ] ] }`
 
