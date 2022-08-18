@@ -1,4 +1,4 @@
 prettier.config.js
-/node_modules
+/data-api/node_modules
 /data-api/.prettierignore
 hasura_sample_metadata_old.json
