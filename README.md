@@ -2,7 +2,7 @@
 
 ## Overview
 
-REST Connectors allow you to add different transforms to the default HTTP
+Hasura REST Connectors allow you to add different transforms to the default HTTP
 request. You can also use context variables in the transforms to achieve dynamic
 behavior for each request.
 
@@ -85,42 +85,61 @@ metadata file.
 ### Example 1
 
 You can review the initial api response at:
+
 <http://localhost:3005/response-example-one>
 
-Initial action response: `{ "first_name": "Melvin", "last_name": "Shanahan"}`
+**Initial action response**:
 
-Kriti transform inserted in template field:
+`{ "first_name": "Melvin", "last_name": "Shanahan"}`
+
+**Kriti transform inserted in template field**:
+
 `{ \"data\": {{ concat([{{$body.first_name}},\" \", {{$body.last_name}}]) }} }`
 
-Action Output: `{"full_name": "Melvin Shanahan"}`
+**Action Output**: `{"full_name": "Melvin Shanahan"}`
 
 ### Example 2
 
 You can review the initial api response at:
+
 <http://localhost:3005/response-example-two>
 
-Initial action response:
+**Initial action response**:
+
 `{ "name": "Freddie Jones", "age": 27, "author": { "articles": [ { "id": 0, "title": "The Elements","length": 150, "published": true }, { "id": 1, "title": "ARRL Handbook", "length": 1000, "published": true }, { "id": 2, "title": "The Mars Trilogy", "length": 500, "published": false } ] } }`
 
-Kriti transform inserted in template field:
+**Kriti transform inserted in template field**:
+
 `"{ \"author\": { \"name\": {{$body.name}}, \"age\": {{$body.age}}, \"articles\": [ {{ range _, x := $body.author.articles }} { \"id\": {{x.id}}, \"title\": {{x.title}} } {{ end }} ] } }"`
 
-Action Output:
+**Action Output**:
+
 `"resTransformExTwo": { "author": { "age": 27, "articles": [ [ { "title": "The Elements", "id": 0 }, { "title": "ARRL Handbook", "id": 1 }, { "title": "The Mars Trilogy", "id": 2 } ] ], "name": "Freddie Jones" } }`
 
 ### Example 3
 
-You can review the initial api response at:
+**You can review the initial api response at:**
+
 <http://localhost:3005/response-example-three>
 
-Initial action response: `[{"1/8/2019":false},{"2/4/2020":true}]`
+**Initial action response which generates random dates as keys:**
 
-Kriti transform inserted in template field:
+`[{"1/8/2019":false},{"2/4/2020":true}]`
+
+**Kriti transform inserted in template field**:
+
 `"template": "{\"calendar\": [ {{range y, x := $body}} {\"date\": {{ head(head(toPairs(x))) }}, \"onSale\": {{ head(tail(head(inverse(toPairs(x))))) }} } {{ end }} ] }"`
 
-Action Output:
+**Action Output**:
+
 `"resTransformExThree": { "calendar": [ [ { "date": "5/17/2017", "onSale": false }, { "date": "6/29/2015", "onSale": false } ] ] }`
 
 ## Request Transforms
 
-Request Transforms are enabled through the UI and therefore editing metadata is not required
+Request Transforms are enabled through the UI and therefore editing metadata is
+not required.
+
+Please see the following documentation which describe the different ways you can
+transform requests in Hasura:
+
+<https://hasura.io/docs/latest/actions/rest-connectors/>
