@@ -18,7 +18,7 @@ The starter kit can be broken into two parts:
 - `cd ./data-api`
 - `npm install`
 - `npm start`
-- `navigate in your browser to <http://localhost:8080/console/settings/metadata-actions>`
+- `navigate in your browser to:`<http://localhost:8080/console/settings/metadata-actions>
 - `import the hasura_sample_metadata.json file from the root of the example directory`
 
 ## Response Transforms
@@ -58,3 +58,9 @@ object has the same form as the following:
 
 Step 4: Create your json transform using Kriti and insert it into the
 response_transform.body.template object created in the last step.
+
+`"response_transform": { "body": { "action": "transform", "template": "{ADDED_KRITI_TRANSFORM}", "version": 2, "template_engine": "Kriti" }`
+
+The action defined in metadata should now look similar to below:
+
+![hasura project metada with added transform](./static-images/add_response_step_4.png?raw=true)
