@@ -2,8 +2,8 @@
 
 ## Overview
 
-Hasura enables you to add different transforms to the default HTTP request &
-response.
+Hasura enables you to add different transforms to the default HTTP action
+request & response.
 
 The starter kit can be broken into two parts:
 
