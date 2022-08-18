@@ -8,70 +8,152 @@
         "tables": [],
         "configuration": {
           "connection_info": {
-            "use_prepared_statements": false,
             "database_url": {
               "from_env": "PG_DATABASE_URL"
             },
-            "isolation_level": "read-committed"
+            "isolation_level": "read-committed",
+            "use_prepared_statements": false
           }
         }
       }
     ],
     "actions": [
       {
-        "name": "resTransformOne",
+        "name": "reqTransformExTwo",
         "definition": {
           "handler": "http://host.docker.internal:3005",
-          "output_type": "DatesArray",
+          "output_type": "ProfileOutput",
+          "arguments": [
+            {
+              "name": "arg1",
+              "type": "ProfileInput!"
+            }
+          ],
           "request_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\n    \"username\": {{$body.input.arg1.username}},\n    \"password\": {{$body.input.arg1.password}},\n    \"profile_metadata\": {\n      \"picture_url\":  {{$body.input.arg1.picture_url}}\n  }\n}\n"
+            },
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "url": "{{$base_url}}/request-example-two",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "reqTransformOne",
+        "definition": {
+          "handler": "http://host.docker.internal:3005",
+          "output_type": "SampleOutput",
+          "forward_client_headers": true,
+          "arguments": [
+            {
+              "name": "arg1",
+              "type": "UserLogin!"
+            }
+          ],
+          "request_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\n    \"username\": {{$body.input.arg1.username}}\n}"
+            },
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "url": "{{$base_url}}/request-example-one",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
+        "name": "resTransformExOne",
+        "definition": {
+          "handler": "http://host.docker.internal:3005",
+          "output_type": "firstAndLast",
+          "request_transform": {
+            "method": "GET",
+            "query_params": {},
             "request_headers": {
+              "add_headers": {},
               "remove_headers": [
                 "content-type"
-              ],
-              "add_headers": {}
+              ]
             },
+            "template_engine": "Kriti",
             "url": "{{$base_url}}/example-one",
-            "method": "GET",
-            "version": 2,
-            "query_params": {},
-            "template_engine": "Kriti"
+            "version": 2
           },
           "response_transform": {
             "body": {
               "action": "transform",
-              "template": "{\"date\": [\"{{$body.date}}\"]}"
+              "template": "{ \"data\":  {{ concat([{{$body.first_name}},\" \", {{$body.last_name}}])  }} }"
             },
-            "version": 2,
-            "template_engine": "Kriti"
+            "template_engine": "Kriti",
+            "version": 2
           },
           "type": "query"
         }
       },
       {
-        "name": "resTransformTwo",
+        "name": "resTransformExTwo",
+        "definition": {
+          "handler": "http://host.docker.internal:3005",
+          "output_type": "AuthorArticles",
+          "request_transform": {
+            "method": "GET",
+            "query_params": {},
+            "request_headers": {
+              "add_headers": {},
+              "remove_headers": [
+                "content-type"
+              ]
+            },
+            "template_engine": "Kriti",
+            "url": "{{$base_url}}/example-three",
+            "version": 2
+          },
+          "response_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{ \"author\": { \"name\": {{$body.name}}, \"age\": {{$body.age}}, \"articles\": [ {{ range _, x := $body.author.articles }} { \"id\": {{x.id}}, \"title\": {{x.title}} } {{ end }} ] } }"
+            },
+            "template_engine": "Kriti",
+            "version": 2
+          },
+          "type": "query"
+        }
+      },
+      {
+        "name": "resTransformFour",
         "definition": {
           "handler": "http://host.docker.internal:3005",
           "output_type": "Calendar",
           "request_transform": {
+            "method": "GET",
+            "query_params": {},
             "request_headers": {
+              "add_headers": {},
               "remove_headers": [
                 "content-type"
-              ],
-              "add_headers": {}
+              ]
             },
-            "url": "{{$base_url}}/example-two",
-            "method": "GET",
-            "version": 2,
-            "query_params": {},
-            "template_engine": "Kriti"
+            "template_engine": "Kriti",
+            "url": "{{$base_url}}/example-tw",
+            "version": 2
           },
           "response_transform": {
             "body": {
               "action": "transform",
               "template": "{\"calendar\": [ {{range y, x := $body}} {\"date\":  {{ head(head(toPairs(x))) }}, \"onSale\":  {{ head(tail(head(inverse(toPairs(x))))) }} } {{ end }} ] }"
             },
-            "version": 2,
-            "template_engine": "Kriti"
+            "template_engine": "Kriti",
+            "version": 2
           },
           "type": "query"
         }
@@ -87,9 +169,78 @@
               "type": "String!"
             }
           ]
+        },
+        {
+          "name": "UserLogin",
+          "fields": [
+            {
+              "name": "username",
+              "type": "String!"
+            },
+            {
+              "name": "password",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "ProfileInput",
+          "fields": [
+            {
+              "name": "username",
+              "type": "String"
+            },
+            {
+              "name": "password",
+              "type": "String"
+            },
+            {
+              "name": "picture_url",
+              "type": "String"
+            }
+          ]
         }
       ],
       "objects": [
+        {
+          "name": "Article",
+          "fields": [
+            {
+              "name": "id",
+              "type": "Int!"
+            },
+            {
+              "name": "title",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "author",
+          "fields": [
+            {
+              "name": "name",
+              "type": "String!"
+            },
+            {
+              "name": "age",
+              "type": "Int!"
+            },
+            {
+              "name": "articles",
+              "type": "[Article]"
+            }
+          ]
+        },
+        {
+          "name": "AuthorArticles",
+          "fields": [
+            {
+              "name": "author",
+              "type": "author"
+            }
+          ]
+        },
         {
           "name": "Event",
           "fields": [
@@ -118,6 +269,72 @@
             {
               "name": "date",
               "type": "[String]"
+            }
+          ]
+        },
+        {
+          "name": "firstAndLast",
+          "fields": [
+            {
+              "name": "data",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "SampleOutput",
+          "fields": [
+            {
+              "name": "accessToken",
+              "type": "String!"
+            }
+          ]
+        },
+        {
+          "name": "ProfileOutput",
+          "fields": [
+            {
+              "name": "username",
+              "type": "String"
+            },
+            {
+              "name": "profile_metadata",
+              "type": "ProfileMetadata"
+            }
+          ]
+        },
+        {
+          "name": "UserProfileOutput",
+          "fields": [
+            {
+              "name": "profile",
+              "type": "ProfileOutput"
+            }
+          ]
+        },
+        {
+          "name": "UserOutput",
+          "fields": [
+            {
+              "name": "username",
+              "type": "String"
+            },
+            {
+              "name": "email",
+              "type": "String"
+            },
+            {
+              "name": "picture_url",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "ProfileMetadata",
+          "fields": [
+            {
+              "name": "picture_url",
+              "type": "String"
             }
           ]
         }

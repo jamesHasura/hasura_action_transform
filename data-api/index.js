@@ -1,38 +1,50 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const {getRandomDate, getRandomBool} = require('./utils/generate-random');
 const app = express();
 const port = 3005;
 const hostname = 'localhost';
 
-app.get('/', (req, res) => {
-  res.json('Hello World!');
+app.use(bodyParser.json());
+
+app.post('/request-example-one', (req, res) => {
+  console.log('Here is the transformed request body', req.body);
+  res.json({
+    accessToken: 'mockToken',
+  });
 });
 
-app.get('/calendar-example', (req, res) => {
-  // Mock Request
-  let data = [];
-  for (let i of Array(5).keys()) {
-    data.push({
-      [getRandomDate()]: {
-        onSale: getRandomBool(),
-        soldOut: getRandomBool(),
-        closed: getRandomBool(),
-      },
-    });
-  }
-  res.json(data);
+app.post('/request-example-two', (req, res) => {
+  console.log('Here is the transformed request body', req.body);
+  const {username, profile_metadata} = req.body;
+  res.json({
+    username,
+    profile_metadata,
+  });
 });
 
-// Example which shows how Hasura can transform dictionary values
-// Handler returns -> {"date": "1/12/23"}
-// Hasura transforms response to -> {"date": ["1/12/23"]}
-// Kriti template utilized -> "{\"date\": [\"{{$body.date}}\"]}"
-app.get('/example-one', (req, res) => {
-  // Mock Request
-  res.json({date: getRandomDate()});
+app.get('/response-example-one', (req, res) => {
+  res.json({
+    first_name: 'Melvin',
+    last_name: 'Shanahan',
+  });
 });
 
-app.get('/example-two', (req, res) => {
+app.get('/response-example-two', (req, res) => {
+  res.json({
+    name: 'Freddie Jones',
+    age: 27,
+    author: {
+      articles: [
+        {id: 0, title: 'The Elements', length: 150, published: true},
+        {id: 1, title: 'ARRL Handbook', length: 1000, published: true},
+        {id: 2, title: 'The Mars Trilogy', length: 500, published: false},
+      ],
+    },
+  });
+});
+
+app.get('/response-example-three', (req, res) => {
   res.json([
     {[getRandomDate()]: getRandomBool()},
     {[getRandomDate()]: getRandomBool()},
