@@ -2,9 +2,8 @@
 
 ## Overview
 
-Hasura REST Connectors allow you to add different transforms to the default HTTP
-request. You can also use context variables in the transforms to achieve dynamic
-behavior for each request.
+Hasura enables you to add different transforms to the default HTTP request &
+response.
 
 The starter kit can be broken into two parts:
 
