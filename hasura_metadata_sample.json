@@ -19,33 +19,7 @@
     ],
     "actions": [
       {
-        "name": "reqTransformExTwo",
-        "definition": {
-          "handler": "http://host.docker.internal:3005",
-          "output_type": "ProfileOutput",
-          "arguments": [
-            {
-              "name": "arg1",
-              "type": "ProfileInput!"
-            }
-          ],
-          "request_transform": {
-            "body": {
-              "action": "transform",
-              "template": "{\n    \"username\": {{$body.input.arg1.username}},\n    \"password\": {{$body.input.arg1.password}},\n    \"profile_metadata\": {\n      \"picture_url\":  {{$body.input.arg1.picture_url}}\n  }\n}\n"
-            },
-            "method": "POST",
-            "query_params": {},
-            "template_engine": "Kriti",
-            "url": "{{$base_url}}/request-example-two",
-            "version": 2
-          },
-          "type": "mutation",
-          "kind": "synchronous"
-        }
-      },
-      {
-        "name": "reqTransformOne",
+        "name": "reqTransformExOne",
         "definition": {
           "handler": "http://host.docker.internal:3005",
           "output_type": "SampleOutput",
@@ -72,30 +46,56 @@
         }
       },
       {
+        "name": "reqTransformExTwo",
+        "definition": {
+          "handler": "http://host.docker.internal:3005",
+          "output_type": "ProfileOutput",
+          "arguments": [
+            {
+              "name": "arg1",
+              "type": "ProfileInput!"
+            }
+          ],
+          "request_transform": {
+            "body": {
+              "action": "transform",
+              "template": "{\n    \"username\": {{$body.input.arg1.username}},\n    \"password\": {{$body.input.arg1.password}},\n    \"profile_metadata\": {\n      \"picture_url\":  {{$body.input.arg1.picture_url}}\n  }\n}\n"
+            },
+            "method": "POST",
+            "query_params": {},
+            "template_engine": "Kriti",
+            "url": "{{$base_url}}/request-example-two",
+            "version": 2
+          },
+          "type": "mutation",
+          "kind": "synchronous"
+        }
+      },
+      {
         "name": "resTransformExOne",
         "definition": {
           "handler": "http://host.docker.internal:3005",
-          "output_type": "firstAndLast",
+          "output_type": "FullName",
           "request_transform": {
-            "method": "GET",
-            "query_params": {},
             "request_headers": {
-              "add_headers": {},
               "remove_headers": [
                 "content-type"
-              ]
+              ],
+              "add_headers": {}
             },
-            "template_engine": "Kriti",
-            "url": "{{$base_url}}/example-one",
-            "version": 2
+            "url": "{{$base_url}}/response-example-one",
+            "method": "GET",
+            "version": 2,
+            "query_params": {},
+            "template_engine": "Kriti"
           },
           "response_transform": {
             "body": {
               "action": "transform",
-              "template": "{ \"data\":  {{ concat([{{$body.first_name}},\" \", {{$body.last_name}}])  }} }"
+              "template": "{ \"full_name\":  {{ concat([{{$body.first_name}},\" \", {{$body.last_name}}])  }} }"
             },
-            "template_engine": "Kriti",
-            "version": 2
+            "version": 2,
+            "template_engine": "Kriti"
           },
           "type": "query"
         }
@@ -106,54 +106,54 @@
           "handler": "http://host.docker.internal:3005",
           "output_type": "AuthorArticles",
           "request_transform": {
-            "method": "GET",
-            "query_params": {},
             "request_headers": {
-              "add_headers": {},
               "remove_headers": [
                 "content-type"
-              ]
+              ],
+              "add_headers": {}
             },
-            "template_engine": "Kriti",
-            "url": "{{$base_url}}/example-three",
-            "version": 2
+            "url": "{{$base_url}}/response-example-two",
+            "method": "GET",
+            "version": 2,
+            "query_params": {},
+            "template_engine": "Kriti"
           },
           "response_transform": {
             "body": {
               "action": "transform",
               "template": "{ \"author\": { \"name\": {{$body.name}}, \"age\": {{$body.age}}, \"articles\": [ {{ range _, x := $body.author.articles }} { \"id\": {{x.id}}, \"title\": {{x.title}} } {{ end }} ] } }"
             },
-            "template_engine": "Kriti",
-            "version": 2
+            "version": 2,
+            "template_engine": "Kriti"
           },
           "type": "query"
         }
       },
       {
-        "name": "resTransformFour",
+        "name": "resTransformExThree",
         "definition": {
           "handler": "http://host.docker.internal:3005",
           "output_type": "Calendar",
           "request_transform": {
-            "method": "GET",
-            "query_params": {},
             "request_headers": {
-              "add_headers": {},
               "remove_headers": [
                 "content-type"
-              ]
+              ],
+              "add_headers": {}
             },
-            "template_engine": "Kriti",
-            "url": "{{$base_url}}/example-tw",
-            "version": 2
+            "url": "{{$base_url}}/response-example-three",
+            "method": "GET",
+            "version": 2,
+            "query_params": {},
+            "template_engine": "Kriti"
           },
           "response_transform": {
             "body": {
               "action": "transform",
               "template": "{\"calendar\": [ {{range y, x := $body}} {\"date\":  {{ head(head(toPairs(x))) }}, \"onSale\":  {{ head(tail(head(inverse(toPairs(x))))) }} } {{ end }} ] }"
             },
-            "template_engine": "Kriti",
-            "version": 2
+            "version": 2,
+            "template_engine": "Kriti"
           },
           "type": "query"
         }
@@ -216,7 +216,7 @@
           ]
         },
         {
-          "name": "author",
+          "name": "Author",
           "fields": [
             {
               "name": "name",
@@ -237,7 +237,7 @@
           "fields": [
             {
               "name": "author",
-              "type": "author"
+              "type": "Author"
             }
           ]
         },
@@ -273,10 +273,10 @@
           ]
         },
         {
-          "name": "firstAndLast",
+          "name": "FullName",
           "fields": [
             {
-              "name": "data",
+              "name": "full_name",
               "type": "String"
             }
           ]
